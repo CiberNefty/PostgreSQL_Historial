@@ -32,3 +32,13 @@ Video: CursoPostgre part: 12:45
     
     (\timing) cuando queremos optimizar la BD, con esta funcion podemos inicializar el tiempo que en cada ejecucion cuanto se demoro en ejecutar ese comando.
 # \timing  (podemos visualizar que en cada ejecucion aparece un tiempo 
+
+-----------------------------------------------------------------------
+ARCHIVOS DE CONFIGURACION 
+
+- postgresql.conf
+- pg_hba.cong
+- pg_ident.conf
+
+- Saber donde estan nuestros archivos de configuracion.
+# SHOW config_file;

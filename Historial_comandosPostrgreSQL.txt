@@ -42,3 +42,50 @@ ARCHIVOS DE CONFIGURACION
 
 - Saber donde estan nuestros archivos de configuracion.
 # SHOW config_file;
+-----------------------------------------------------------------------
+*** COMANDOS DE NAVEGACION & CONSULTA DE INFORMACION ***
+
+- Listar los esquemas de la base de datos actual.
+# \dn
+
+- Listar las funciones disponibles de la base de datos actual.
+# \df
+
+- Listar las vistas de la base de datos actual.
+# \dv
+
+- Listar los usuarios y sus roles de la base de datos actual.
+# \du
+-----------------------------------------------------------------------
+*** COMANDOS DE INSPECCION Y EJECUCION ***
+
+-  Volver a ejecutar el comando ejecutando justo antes.
+# \g
+
+-  Ver el historial de comandos ejecutados.
+# \s
+
+- Si se quiere guardar la lista de comandos ejecutados en un archivo de texto plano.
+# \s <nombre_archivo>
+
+- Ejecutar los comandos desde un archivo.
+# \i <name_archivo>
+
+- Permite abrir un editor de texto plano, escribir comomandos y ejecutar en lote. \e abre el editor de texto, escribir allí todos los comandos, luego guardar los cambios y cerrar, al cerrar se ejecutarán todos los comandos guardados.
+# \e
+
+- Equivalente al comando anterior pero permite editar tambien funciones de PostgreSQL.
+# \ef
+-----------------------------------------------------------------------
+***  COMANDOS PARA DEBUG Y OPTIMIZACIÓN  ***
+
+- Activar / Desactivar el contador de tiempo por consulta.
+# \timing
+
+-----------------------------------------------------------------------
+***  COMANDOS PARA CERRAR LA CONSOLA  ***
+
+- Cerrar la consola.
+# \q
+
+-----------------------------------------------------------------------

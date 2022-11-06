@@ -89,3 +89,25 @@ ARCHIVOS DE CONFIGURACION
 # \q
 
 -----------------------------------------------------------------------
+***  COMANDOS BASICOS DE CRUD  ***
+
+- Crear BB.
+# CREATE DATABASE <name_new_db>;
+
+- Crear table.
+# CREATE TABLE <name_new_table> (name_columns valor);
+
+- INSERCION DE DATOS.
+# INSERT INTO <name_table> (<name_column>, <name_column> VALUES (<'valor_column1'>, <valor_column2>);
+
+- Consultamos ahora los datos en la tabla:
+# SELECT * FROM <name_table>;
+
+- Modificar valor.
+# UPDATE <name_table> SET <name_table> = <new_value> WHERE <name_table> = <valor_correspondiente>;
+
+- Borrar registro.
+# DELETE FROM <name_table> WHERE <condicion>;
+
+- Realizar encriptacion de un texto usando el algoritmo md5.
+# SELECT MD5 ('Vamos a encriptar este texto que leo');

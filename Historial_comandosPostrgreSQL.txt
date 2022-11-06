@@ -1,1 +1,34 @@
 *********	COMANDOS POSTGRE_SQL	********
+
+Video: CursoPostgre part: 12:45
+
+- Conocer todos los comandos y sus guias.
+# \?
+
+- Listar todas las bases de datos.
+# \l
+
+- Acceder a la bases de datos.
+# \c <name_database>
+
+- Listar todas las tablas.
+# \dt
+
+- Describir bases tablas.
+# \d <name_table>
+
+- Si necesitamos ayuda en algun comando que tengas en dudad. Ver todas las funciones que podemos utilizar siendo comandos SQL.
+# \h
+
+- Si tenemos duda de como se utiliza alguna funcion.
+# \h <name_funcion_comando>
+
+- Que version esta ejecutando en la BD. (Verificar que es mejor poner los comandos de SQL en mayuscula)
+# SELECT version();
+
+- 2 Comandos utiles para encontrar cualquier problema con la interfaz grafica.
+    (\g) te permite ejeuctar la ultima funcion que acabas de utilizar en la consola.
+# \g
+    
+    (\timing) cuando queremos optimizar la BD, con esta funcion podemos inicializar el tiempo que en cada ejecucion cuanto se demoro en ejecutar ese comando.
+# \timing  (podemos visualizar que en cada ejecucion aparece un tiempo 

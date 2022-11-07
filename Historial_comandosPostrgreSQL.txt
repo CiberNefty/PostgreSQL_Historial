@@ -111,3 +111,19 @@ ARCHIVOS DE CONFIGURACION
 
 - Realizar encriptacion de un texto usando el algoritmo md5.
 # SELECT MD5 ('Vamos a encriptar este texto que leo');
+-----------------------------------------------------------------------
+***  TIPOS DE DATOS ***
+
+Numericos
+Monetarios
+Texto
+Binarios
+Fecha / Hora
+Boolean
+
+- Formatos especiales de PostgreSQL
+Geometricos
+Direccion de Red
+Texto tipo bit
+XML,json
+Arreglos

@@ -1,6 +1,6 @@
 *********	COMANDOS POSTGRE_SQL	********
 
-Video: CursoPostgre part: 12:45
+
 
 - Conocer todos los comandos y sus guias.
 # \?
@@ -166,3 +166,49 @@ de permisos y los roles existen de manera predeterminada en postgres.
 
 - CAMBIAR NOMBRE DEL USUARIO.
 # ALTER ROLE <name_user> RENAME TO <new_name_role>;
+-----------------------------------------------------------------------
+***	LLAVES FORANEAS   ***
+
+Se refiere a la relacion que tiene entre las tablas y corresponde con 
+nuestro acid en la parte de consistencia, es decir, que todas la tablas
+tienen relacion entre si y la inforacion es congruente.
+
+Las llaves foraneas tienen una estructura basica, desde una tabla de origen
+una tabla de destino y las acciones de que haya una modificacion en la tabla
+de origen.
+
+Para hacerlo nos dirigimos a pgadmin4 y ya teniendo toda la estructura
+de la DB con tablas hechas nos dirigimos a la tabla que queremos relacionar,
+vamos a propiedades, vamos a la pestaña constraints y donde dice foreign key
+creamos el nombre de la Foreign key (por llevar un orden, nombramos primero
+la tabla de origen y luego la tabla de destino y le agregamos el _fkey)
+luego nos dirigimos a editar esa llave foranea (a mano izquierda aparece
+un icono con un lapiz).
+
+Al darle clic podemos obervar el nombre que le hemos puesto y en la columna
+de definicion podemos agregar caracteristicas especiales, ya que podemos
+que una llave foranea llegue ha ser validada al instante ó, sea validada
+despues, o no sea validada cuando estemos haciendo un Backup, 
+las caracteristicas que se nos muestran son (DEFERRABLE?); quiere decir 
+que la podemos aplazar, (DEFERRED?); quiere decir que cuando la creemos 
+no se va a validar, (MATCH TYPE?); quiere decir que la comparacion 
+entre columnas va hacer valor a valor donde si tenemos algun parametro
+diferente puede ser compleja, (VALIDATED?); quiere decir que tenemos que 
+ser inicializar las tablas con la validacion, y (AUTO FK INDEX?); esta desavilitada de manera predeterminada por que no es un indice en nuestra tabla.
+
+Ahora ya sabiendo esto miramos el caso que nos convenga, ahora nos 
+dirigimos a la columna donde dice columns y donde dice local column hacemos
+referencia con la columna que vaya hacer de origen (esta columna tiene
+que ser el mismo valor que la columna referenciada) luego referenciamos
+la tabla que queremos de destino y luego el identificador primario de
+la columna de destino y, luego le damos al mas (+) que se encuentra en ese
+mismo apartado, la pestaña accion es la mas importante ya que le decimos
+que haga cuando haya un cambio.
+
+- Si queremos hacer una consulta para agregar una llave foranea hacemos una
+alteracion y luego agregamos la llave.
+# ALTER TABLE <name_table> ADD CONSTRAINT <name_table_origin>_<name_table_destino>_fkey FOREIGN KEY (<name_column tabla origen>)
+        REFERENCES public.<name_table_destino> (<name_column tabla destino>) MATCH SIMPLE
+        ON UPDATE CASCADE
+        ON DELETE CASCADE
+        NOT VALID;

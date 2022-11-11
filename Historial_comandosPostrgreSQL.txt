@@ -127,3 +127,39 @@ Direccion de Red
 Texto tipo bit
 XML,json
 Arreglos
+-----------------------------------------------------------------------
+*** ROLES en la BD ***
+
+Los roles como cualquier objeto de la BD tiene la capacidad de ser
+creador o eliminados, sin embargo los roles tienen una caracteristica
+especial y es que pueden crear o eliminar otros roles, tienen atributos
+quiere decir que pueden hacer login o no, pueden acceder a la BD, pueden
+eliminar tablas, los roles pueden ser agrupados bajo un conjunto global
+de permisos y los roles existen de manera predeterminada en postgres.
+
+(Los roles son independientes a las BD)
+
+- Consulta para crear un Role.
+# CREATE ROLE <name_rol> caracteristicas;
+
+- Ver todas las funciones de CREATE ROLE.
+# \h CREATE ROLE
+
+- Vamos a crear un rol con la capacidad de hacer login y asignar la contraseña. (este usuario va a tener acceso de lectura, insertar y actualizar consulta.
+# CREATE ROLE usuario_consulta; (asi lo creamos sin contraseña y con todas las caracteristicas)
+
+- Ver todos los usuarios creados.
+# \dg
+
+- Ahora queremos que este rol tenga la capacidad de acceder a la BD, asi que lo tenemos que modificar.
+# ALTER ROLE usuario_consulta WITH LOGIN;
+
+- Ahora que tenga la capacidad de ser superusuario.
+# ALTER ROLE usuario_consulta WITH SUPERUSER;
+
+- Tenemos que agregarle a nuestro usuario contraseña para que el pueda acceder a la BD.
+# ALTER ROLE <name_role> WITH PASSWORD '<contraseña en comillas simples';
+
+- Borrar usuarios
+(Para eliminar usuarios tenemos que cerrar la sesion que tenemos abierta y, iniciamos desde la sesion de postgres'
+# DROP ROLE <name_role>;

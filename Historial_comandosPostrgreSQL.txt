@@ -163,3 +163,6 @@ de permisos y los roles existen de manera predeterminada en postgres.
 - Borrar usuarios
 (Para eliminar usuarios tenemos que cerrar la sesion que tenemos abierta y, iniciamos desde la sesion de postgres'
 # DROP ROLE <name_role>;
+
+- CAMBIAR NOMBRE DEL USUARIO.
+# ALTER ROLE <name_user> RENAME TO <new_name_role>;

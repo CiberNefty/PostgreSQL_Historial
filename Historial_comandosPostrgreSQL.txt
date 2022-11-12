@@ -212,3 +212,39 @@ alteracion y luego agregamos la llave.
         ON UPDATE CASCADE
         ON DELETE CASCADE
         NOT VALID;
+
+-----------------------------------------------------------------------
+***	INSERCION DE DATOS	***
+
+INSERT INTO public.<name_table>(
+	name_table, name_table)
+	VALUES ('Values', 'Values');
+
+-----------------------------------------------------------------------
+***	SELECT DE DATOS		***
+
+SELECT * FROM public.<name_table>
+ORDER BY id ASC;
+
+-----------------------------------------------------------------------
+***	DROP COLUMN	***
+
+ALTER TABLE IF EXISTS public.<name_table> DROP COLUMN IF EXISTS <column>;
+
+-----------------------------------------------------------------------
+***	ADD COLUMN	***
+
+ALTER TABLE IF EXISTS public.<name_table>
+    ADD COLUMN <new_name_collumn> <type_values>;
+
+-----------------------------------------------------------------------
+***	BORRAR REGISTRO		***
+
+DELETE FROM <name_table> WHERE <name_column> = <values>;
+
+-----------------------------------------------------------------------
+***	ACTUALIZACION DE REGISTRO	***
+
+UPDATE public.<name_table>
+	SET <name_column> = <values>, <name_column> = <values>, <name_column> = <values>
+	WHERE <name_column> = <name_column>;

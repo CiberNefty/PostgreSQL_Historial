@@ -14,10 +14,10 @@
 - Listar todas las tablas.
 # \dt
 
-- Describir bases tablas.
+- Describir tablas.
 # \d <name_table>
 
-- Si necesitamos ayuda en algun comando que tengas en dudad. Ver todas las funciones que podemos utilizar siendo comandos SQL.
+- Si necesitamos ayuda en algun comando que tengas en duda. Ver todas las funciones que podemos utilizar siendo comandos SQL.
 # \h
 
 - Si tenemos duda de como se utiliza alguna funcion.
@@ -37,7 +37,7 @@
 ARCHIVOS DE CONFIGURACION 
 
 - postgresql.conf
-- pg_hba.cong
+- pg_hba.conf
 - pg_ident.conf
 
 - Saber donde estan nuestros archivos de configuracion.
@@ -59,7 +59,7 @@ ARCHIVOS DE CONFIGURACION
 -----------------------------------------------------------------------
 *** COMANDOS DE INSPECCION Y EJECUCION ***
 
--  Volver a ejecutar el comando ejecutando justo antes.
+-  Volver a ejecutar el comando ejecutado justo antes.
 # \g
 
 -  Ver el historial de comandos ejecutados.
@@ -95,18 +95,18 @@ ARCHIVOS DE CONFIGURACION
 # CREATE DATABASE <name_new_db>;
 
 - Crear table.
-# CREATE TABLE <name_new_table> (name_columns valor);
+# CREATE TABLE <name_new_table> (name_columns VALOR);
 
 - INSERCION DE DATOS.
-# INSERT INTO <name_table> (<name_column>, <name_column> VALUES (<'valor_column1'>, <valor_column2>);
+# INSERT INTO <name_table> (<name_column>, <name_column>) VALUES (<'valor_column1'>, <valor_column2>);
 
 - Consultamos ahora los datos en la tabla:
 # SELECT * FROM <name_table>;
 
 - Modificar valor.
-# UPDATE <name_table> SET <name_table> = <new_value> WHERE <name_table> = <valor_correspondiente>;
+# UPDATE <name_table> SET <name_column> = <new_value> WHERE <name_column> = <valor_correspondiente>;
 
-- Borrar registro.
+- BORRAR REGISTRO.
 # DELETE FROM <name_table> WHERE <condicion>;
 
 - Realizar encriptacion de un texto usando el algoritmo md5.
@@ -146,7 +146,7 @@ de permisos y los roles existen de manera predeterminada en postgres.
 # \h CREATE ROLE
 
 - Vamos a crear un rol con la capacidad de hacer login y asignar la contraseña. (este usuario va a tener acceso de lectura, insertar y actualizar consulta.
-# CREATE ROLE usuario_consulta; (asi lo creamos sin contraseña y con todas las caracteristicas)
+# CREATE ROLE usuario_consulta; (asi lo creamos sin contraseña y con las caracteristicas predeterminadas y heredadas del padre)
 
 - Ver todos los usuarios creados.
 # \dg
@@ -158,10 +158,10 @@ de permisos y los roles existen de manera predeterminada en postgres.
 # ALTER ROLE usuario_consulta WITH SUPERUSER;
 
 - Tenemos que agregarle a nuestro usuario contraseña para que el pueda acceder a la BD.
-# ALTER ROLE <name_role> WITH PASSWORD '<contraseña en comillas simples';
+# ALTER ROLE <name_role> WITH PASSWORD '<contraseña en comillas simples'>;
 
 - Borrar usuarios
-(Para eliminar usuarios tenemos que cerrar la sesion que tenemos abierta y, iniciamos desde la sesion de postgres'
+(Para eliminar usuarios tenemos que cerrar la sesion que tenemos abierta y, iniciamos desde la sesion de postgres
 # DROP ROLE <name_role>;
 
 - CAMBIAR NOMBRE DEL USUARIO.
@@ -201,7 +201,7 @@ dirigimos a la columna donde dice columns y donde dice local column hacemos
 referencia con la columna que vaya hacer de origen (esta columna tiene
 que ser el mismo valor que la columna referenciada) luego referenciamos
 la tabla que queremos de destino y luego el identificador primario de
-la columna de destino y, luego le damos al mas (+) que se encuentra en ese
+la columna de destino y, luego le damos al mas (+ ó ADD) que se encuentra en ese
 mismo apartado, la pestaña accion es la mas importante ya que le decimos
 que haga cuando haya un cambio.
 
@@ -217,7 +217,7 @@ alteracion y luego agregamos la llave.
 ***	INSERCION DE DATOS	***
 
 INSERT INTO public.<name_table>(
-	name_table, name_table)
+	name_column, name_column)
 	VALUES ('Values', 'Values');
 
 -----------------------------------------------------------------------
@@ -235,7 +235,7 @@ ALTER TABLE IF EXISTS public.<name_table> DROP COLUMN IF EXISTS <column>;
 ***	ADD COLUMN	***
 
 ALTER TABLE IF EXISTS public.<name_table>
-    ADD COLUMN <new_name_collumn> <type_values>;
+    ADD COLUMN <new_name_column> <type_values>;
 
 -----------------------------------------------------------------------
 ***	BORRAR REGISTRO		***
@@ -246,5 +246,5 @@ DELETE FROM <name_table> WHERE <name_column> = <values>;
 ***	ACTUALIZACION DE REGISTRO	***
 
 UPDATE public.<name_table>
-	SET <name_column> = <values>, <name_column> = <values>, <name_column> = <values>
-	WHERE <name_column> = <name_column>;
+	SET <name_column> = <new_value>, <name_column> = <new_value>, <name_column> = <new_value>
+	WHERE <name_column> = <value_Before>;

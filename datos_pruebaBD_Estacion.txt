@@ -1,0 +1,66 @@
+--------------------------------------------------------------------------------------
+***	PASAJERO	***
+INSERT INTO public.pasajero(
+	nombre, direccion_residencia, fecha_nacimiento)
+	VALUES ('Daniel V', 'Cll 104 # 71', '1973-07-08');
+
+INSERT INTO public.pasajero
+VALUES ('Edgar H','Av 1 # 03','1978-08-08'),
+('Daniela A','Av 34 # 15','1983-10-27'),
+('Juanfe V','Cll 2 # 17 j','1988-02-22'),
+('Milena J','Cll 83 # 95 i','1980-11-15');
+
+
+--------------------------------------------------------------------------------------
+***	TREN	***
+
+INSERT INTO public.tren(
+	modelo, capacidad)
+	VALUES ('Modelo 1 xl', '322');
+	
+INSERT INTO public.tren(modelo, capacidad)
+	VALUES ('Modelo 6 m', 162),
+		('Modelo 3 fi',500),
+		('Modelo 4',250),
+		('Modelo 5',250);
+
+--------------------------------------------------------------------------------------
+***	ESTACION	***
+
+INSERT INTO public.estacion(
+	nombre, direccion)
+	VALUES ('Clusster', 'Av avellaneda 107'), ('Mosquera','Av flores # 01');
+
+UPDATE public.estacion
+SET nombre = 'Rufler ct', direccion = 'Cll 3 # 12'
+WHERE id = 1;
+
+UPDATE public.estacion
+SET nombre = 'Bludwet', direccion = 'Crra 100 # 37'
+WHERE id = 2;
+
+--------------------------------------------------------------------------------------
+***	||||||	***
+
+
+
+INSERT INTO public.trayecto (id_estacion,id_tren,nombre) VALUES 
+(1,1,'Ruta 2'),
+(4,5,'Ruta 3'),
+(3,7,'Ruta 4'),
+(2,8,'Ruta 5');
+
+SELECT * FROM trayecto;
+#----------------------------------------------------
+INSERT INTO public.viaje (id_pasajero,id_trayecto,inicio,fin) VALUES
+(1,6,'1996-01-03','1996-01-04'),
+(4,1,'1996-02-09','1996-02-10'),
+(3,7,'1996-02-22','1996-02-25'),
+(5,5,'1997-09-07','1997-10-07'),
+(2,5,'1995-05-05','1995-05-06'),;
+
+
+INSERT INTO public.trayecto (id,id_estacion,id_tren,nombre) VALUES
+(1,5,7,'Ruta 1');
+SELECT * FROM viaje;
+INSERT INTO public.estacion (id,nombre,direccion) VALUES (5,'K21','Av 31 # 175');

@@ -248,3 +248,99 @@ DELETE FROM <name_table> WHERE <name_column> = <values>;
 UPDATE public.<name_table>
 	SET <name_column> = <new_value>, <name_column> = <new_value>, <name_column> = <new_value>
 	WHERE <name_column> = <value_Before>;
+
+-----------------------------------------------------------------------
+***	JOINS	***
+
+- Uniones sin JOIN
+SELECT pasajero.id, pasajero.nombre, viaje.id_trayecto, viaje.inicio, viaje.fin
+FROM pasajero, viaje
+WHERE pasajero.id = viaje.id_pasajero ORDER BY pasajero.id ASC;
+
+- QUe pasajeros an hecho almenos un viaje.
+SELECT * FROM pasajero
+JOIN viaje ON (viaje.id_pasajero = pasajero.id);
+
+- Quienes no han tomado ni un solo viaje.
+SELECT * FROM pasajero
+LEFT JOIN viaje ON (viaje.id_pasajero = pasajero.id)
+WHERE viaje.id IS NULL;
+
+SELECT * FROM pasajero
+RIGHT JOIN viaje ON viaje.id_pasajero = pasajero.id
+ORDER BY pasajero.id ASC;
+
+SELECT * FROM pasajero
+LEFT JOIN viaje ON (viaje.id_pasajero = pasajero.id)
+WHERE viaje.id ISNULL;
+
+
+SELECT pasajero.id, pasajero.nombre, viaje.id_trayecto, viaje.inicio, viaje.fin
+FROM pasajero, viaje
+WHERE pasajero.id = viaje.id_pasajero ORDER BY pasajero.id ASC;
+
+- Mostrar los pasajero que salgan desde la fecha '1987'
+
+SELECT *  FROM pasajero
+LEFT JOIN viaje 
+	ON (viaje.id_pasajero = pasajero.id)
+WHERE viaje.inicio >= '1987-01-01';
+
+- Mostrar pasajeros que tengan un viaje desde tal fecha y terminan en tal fecha y ordernarlos por id de viaje .
+
+SELECT * FROM viaje AS v
+JOIN pasajero AS p ON p.id = v.id_pasajero
+WHERE v.inicio >= '1996-01-01' AND v.fin <= '2010-01-01' AND nombre = 'Daniela A'
+ORDER BY v.id ASC;
+
+- Que trayectos van a tales estaciones.
+
+SELECT * FROM trayecto AS t
+JOIN estacion AS e
+	ON (e.id = t.id_estacion);
+
+- Que estacion tienen las rutas que contengan las letras de en alguna posicion.
+SELECT * FROM estacion
+LEFT JOIN trayecto 
+	ON (estacion.id = trayecto.id)
+WHERE estacion.nombre LIKE '%de%';
+
+- Que estaciones no tienen ningun trayecto.
+SELECT * FROM estacion
+LEFT JOIN trayecto
+	ON trayecto.id_estacion = estacion.id
+WHERE trayecto.id_estacion ISNULL;
+
+- Union de tren con trayecto.
+SELECT * FROM tren
+INNER JOIN trayecto
+	ON trayecto.id_tren = tren.id;
+
+- Mostrar los trenes que vayan con nombre de ruta 4.
+SELECT * FROM tren
+JOIN trayecto
+	ON trayecto.id_tren = tren.id
+WHERE trayecto.nombre = 'Ruta 4';
+SELECT nombre FROM estacion;
+
+- Mostrar los trenes que vayan con el trayecto empezando por la b 
+(No comprendo por que la clausula LIKE no me deja encontrar con letras desde un inicio :/).
+
+SELECT tren.id, tren.modelo, trayecto.id, trayecto.nombre FROM tren
+LEFT JOIN trayecto
+	ON trayecto.id_tren = tren.id
+WHERE trayecto.nombre LIKE '_a%' 
+ORDER BY tren.id, trayecto.nombre ASC 
+LIMIT 10;
+
+- Agrupar por trenes cuantos trayecto tienen cada tren (EStos toca corregirlos con logica).
+
+SELECT tren.id, tren.modelo, SUM(trayecto.id) FROM tren
+JOIN trayecto
+	ON trayecto.id_tren = tren.id
+GROUP BY trayecto.nombre;
+
+SELECT tren.modelo, SUM(trayecto.id), trayecto.nombre FROM tren
+JOIN trayecto
+	ON trayecto.id_tren = tren.id
+GROUP BY trayecto.nombre, tren.id;

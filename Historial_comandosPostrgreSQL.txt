@@ -270,9 +270,7 @@ SELECT * FROM pasajero
 RIGHT JOIN viaje ON viaje.id_pasajero = pasajero.id
 ORDER BY pasajero.id ASC;
 
-SELECT * FROM pasajero
-LEFT JOIN viaje ON (viaje.id_pasajero = pasajero.id)
-WHERE viaje.id ISNULL;
+
 
 
 SELECT pasajero.id, pasajero.nombre, viaje.id_trayecto, viaje.inicio, viaje.fin
@@ -305,6 +303,13 @@ LEFT JOIN trayecto
 	ON (estacion.id = trayecto.id)
 WHERE estacion.nombre LIKE '%de%';
 
+SELECT trayecto.id_estacion, estacion.nombre FROM trayecto
+JOIN estacion
+	ON trayecto.id_estacion = estacion.id
+WHERE estacion.direccion LIKE '%o_d%'
+GROUP BY trayecto.id_estacion, estacion.nombre
+ORDER BY estacion.nombre DESC LIMIT 7;
+
 - Que estaciones no tienen ningun trayecto.
 SELECT * FROM estacion
 LEFT JOIN trayecto
@@ -325,22 +330,61 @@ SELECT nombre FROM estacion;
 
 - Mostrar los trenes que vayan con el trayecto empezando por la b 
 (No comprendo por que la clausula LIKE no me deja encontrar con letras desde un inicio :/).
+(Al parecer el error es en que la clausula LIKE reconoce entre mayusculas
+			 y minusculas y el comodin si es necesario).
 
-SELECT tren.id, tren.modelo, trayecto.id, trayecto.nombre FROM tren
-LEFT JOIN trayecto
+SELECT tren.id FROM tren
+JOIN trayecto
 	ON trayecto.id_tren = tren.id
-WHERE trayecto.nombre LIKE '_a%' 
-ORDER BY tren.id, trayecto.nombre ASC 
+WHERE trayecto.nombre LIKE 'R%'
+GROUP BY tren.id, trayecto.nombre
+ORDER BY tren.id, trayecto.nombre ASC
 LIMIT 10;
 
 - Agrupar por trenes cuantos trayecto tienen cada tren (EStos toca corregirlos con logica).
-
-SELECT tren.id, tren.modelo, SUM(trayecto.id) FROM tren
+(corregidos con instrucciones nuevas)
+SELECT trayecto.nombre, tren.id FROM tren
 JOIN trayecto
 	ON trayecto.id_tren = tren.id
-GROUP BY trayecto.nombre;
+GROUP BY trayecto.nombre, tren.id;
 
 SELECT tren.modelo, SUM(trayecto.id), trayecto.nombre FROM tren
 JOIN trayecto
 	ON trayecto.id_tren = tren.id
 GROUP BY trayecto.nombre, tren.id;
+
+- Agrupar todos los trenes por nombre y sumarles cada identificador que trenga relacionado con la tabla trayecto.
+SELECT trayecto.nombre, SUM(tren.id + trayecto.id) FROM tren
+JOIN trayecto
+	ON trayecto.id_tren = tren.id
+GROUP BY trayecto.nombre, tren.id;
+
+--------------------------------------------------------
+	Utilizando BETWEEN
+
+SELECT tren.modelo, trayecto.id, trayecto.nombre FROM tren
+JOIN trayecto
+	ON trayecto.id_tren = tren.id
+WHERE trayecto.id
+BETWEEN 1 and 9;
+
+--------------------------------------------------------
+	MULTPLES JOINS
+SELECT * FROM pasajero AS p
+JOIN viaje as v
+	ON v.id_pasajero = p.id
+JOIN trayecto AS t
+	ON v.id_trayecto = t.id
+JOIN estacion AS e
+	ON t.id_estacion = e.id
+JOIN tren as tr
+	ON t.id_tren = tr.id
+WHERE p.id >= 1 AND p.id <77;
+
+SELECT tren.id FROM tren
+JOIN trayecto
+	ON trayecto.id_tren = tren.id
+WHERE trayecto.nombre LIKE 'R%'
+GROUP BY tren.id, trayecto.nombre
+ORDER BY tren.id, trayecto.nombre ASC
+LIMIT 10;

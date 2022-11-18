@@ -388,3 +388,108 @@ WHERE trayecto.nombre LIKE 'R%'
 GROUP BY tren.id, trayecto.nombre
 ORDER BY tren.id, trayecto.nombre ASC
 LIMIT 10;
+
+---------------------------------------------------------
+	FUNCIONES ESPECIALES PRINCIPALES
+
+ON CONFLICT DO
+RETURNING
+LIKE / ILIKE
+IS / IS NOT
+
+
+- ON CONFLICT DO;
+No ayuda a solucionar problemas cuando queremos insertar o 
+modificar datos en una tabla que no podamos y justamente despues 
+hacemos la actializacion correcta, es decir si queremos insertar 
+un dato que ya existe ON CONFLICT DO nos permite insertar si lo 
+que queremos es actualizar el mismo dato.
+
+- Si no queremos hacer ningun cambio colocamos DO NOTHING
+INSERT INTO public.estacion
+	(id, nombre, direccion)
+VALUES (1,'Kinekinesis','St 142 # 34')
+	ON CONFLICT DO NOTHING;
+	
+- SI queremos hacer cambio indicamos la columna con conflicto
+y luego hacemos una consulta update como cualquier otra
+INSERT INTO public.estacion
+	(id, nombre, direccion)
+VALUES (1,'Kinekinesis','St 142 # 34')
+	ON CONFLICT (id) DO UPDATE SET nombre = 'Kinekinesis', direccion = 'St 142 # 34';
+
+- RETURNING;
+Nos permite devolver todos los cambios que hemos echo en la BD.
+INSERT INTO public.estacion
+	(nombre, direccion)
+VALUES ('Propegta','Zflek 15')
+RETURNING *;
+
+- LIKE / ILIKE
+SELECT * FROM estacion
+WHERE nombre ILIKE 'd_n%';
+
+----------------------------------------------------------------
+	FUNCIONES ESPECIALES AVANZADAS
+COALESCE
+NULLIF
+GREATEST
+LEAST
+BLOQUES ANONIMOS
+
+
+- COALESCE;
+Te permite comparar dos valores y retornar cual de los dos
+no es nul.
+
+comparamos la columna que creemos que esta nula, si no esta nula
+arroja el valor, si esta nula agregamos un mensaje en commilla simple.
+SELECT id, COALESCE (nombre,'No aplica'), direccion_residencia, fecha_nacimiento
+	FROM public.pasajero
+WHERE id = 1;
+
+Si no queremos que cambie el nombre de la columna le agregmos un alias.
+SELECT id, COALESCE (nombre,'No aplica') AS name_table.
+
+
+- NULLIF;
+Tambien te permite retornar dos valores y
+ retorna null si son iguales.
+
+SELECT NULLIF (0,0);
+
+- GREATEST Y LEAST;
+Te permite comparar un arreglo de valores y te retorna
+ en el caso de GREATEST el mayor y en el caso de LEAST el menor.
+le pasamos un arreglo de valores y no muestra cual es el mayor.
+
+SELECT GREATEST (0,2,4,5,6,7,8,9,0,32,55); # Retorna el valor mayor.
+SELECT LEAST (0,2,4,5); # Retorna el valor menor
+
+- BLOQUES ANONIMOS;
+Al igual que el desarrollo de software te permite ingresar 
+condicionales pero esta ves dentro de una consulta de BD.
+
+SELECT id, nombre, direccion_residencia, fecha_nacimiento,
+CASE
+WHEN fecha_nacimiento > '1985-01-01' THEN
+'Mayor'
+ELSE
+'Niño'
+END
+	FROM public.pasajero
+WHERE fecha_nacimiento > '1985-01-01'
+ORDER BY fecha_nacimiento ASC;
+
+-- "SUPER CONSULTA"
+SELECT p.id, p.nombre, p.fecha_nacimiento, v.inicio,tr.modelo, t.nombre, e.nombre,
+CASE 
+WHEN fecha_nacimiento > '1980-01-01' THEN 'Mayor'
+ELSE 'Menor' END
+FROM pasajero AS p
+JOIN viaje AS v	ON v.id_pasajero = p.id
+JOIN trayecto AS t ON t.id = v.id_trayecto
+JOIN tren AS tr ON tr.id = t.id_tren
+JOIN estacion AS e ON e.id = t.id_estacion
+WHERE p.id >5 AND p.id < 142 AND p.nombre ILIKE 'd%'
+ORDER BY fecha_nacimiento ASC;

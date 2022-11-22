@@ -538,3 +538,31 @@ ORDER BY (CASE nombre
 	WHEN 'Hamid Govey'	THEN 5
 	WHEN 'Tabina Lunck' 	THEN 6
 	ELSE 100 END) ASC;
+---------------------------------------------------------------------
+		CLÁUSULA UNIONES
+
+La cláusula/operador SQL UNION se utiliza para combinar los resultados de dos o más instrucciones SELECT sin devolver filas duplicadas.
+
+Para utilizar esta cláusula UNION, cada instrucción SELECT debe tener
+
+El mismo número de columnas seleccionadas
+El mismo número de expresiones de columna
+El mismo tipo de datos y
+Tenerlos en el mismo orden
+Pero no tienen que tener que estar en la misma longitud.
+
+ESTA CONSULTA NO DEVUELVE FILAS DUPLICADAS
+
+SELECT p.nombre, p.id, v.inicio, v.fin FROM pasajero AS p
+LEFT JOIN viaje AS v
+	ON v.id_pasajero = p.id
+
+UNION
+
+SELECT p.nombre, p.id, v.inicio, v.fin FROM pasajero AS p
+RIGHT JOIN viaje AS v
+	ON v.id_pasajero = p.id;
+
+Clausula SQL UNION ALL: El operador UNION ALL se utiliza para combinar los resultados de dos instrucciones SELECT que incluyen filas duplicadas.
+Cláusula SQL INTERSECT: se utiliza para combinar dos instrucciones SELECT, pero devuelve filas sólo de la primera instrucción SELECT que son idénticas a una fila de la segunda instrucción SELECT.
+Cláusula SQL EXCEPT: Combina dos instrucciones SELECT y devuelve filas de la primera instrucción SELECT que no son devueltas por la segunda instrucción SELECT.

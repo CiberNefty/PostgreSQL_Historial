@@ -493,3 +493,48 @@ JOIN tren AS tr ON tr.id = t.id_tren
 JOIN estacion AS e ON e.id = t.id_estacion
 WHERE p.id >5 AND p.id < 142 AND p.nombre ILIKE 'd%'
 ORDER BY fecha_nacimiento ASC;
+
+------------------------------------------------------------------------
+		VISTAS & VISTAS MATERIALIZADAS
+
+Una vista en escencia es agarrar una consulta que repites
+mucho y convertirla en un solo nombre, de modo que hagamos 
+select * from <nam_vista>, a diferencia que hagamos 
+select * from <name_table> ó JOINS, Porque? por que nos ayuda a centralizar
+todos los esfuerzos en una funcion.
+
+Tenemos dos opciones, VOLATILES Y MATERIALIZADAS.
+
+Vista vs Vista Materializada
+
+VOLATILES; Es que siempre que se haga consula a la vista la base datos va 
+hacer la ejecucion a la BD por lo cual siempre tendremos informacion 
+reciente.
+
+MATERIALIZADAS; Solo hacemos la consulta 1 vez y esa informacion queda
+almacenada en memoria, cuando hagamos una consulta nos traera lo que haya
+en memoria
+
+- llenar vista materializada para luego llamarla en la consulta;
+# REFRESH MATERIALIZED VIEW <name_view_materialized;
+
+
+
+SELECT * FROM inicio_fin_viaje_mview;
+REFRESH MATERIALIZED VIEW inicio_fin_viaje_mview;
+
+DELETE FROM viaje WHERE inicio >= '1996-01-03' AND fin = '1996-01-04'; 
+
+SELECT * FROM viaje WHERE inicio >= '1996-01-03' AND fin <= '1996-01-05';
+---------------------------------------------------------------------
+	EJEMPLO ORDER BY ordernar desde un llamado de registro
+SELECT * FROM pasajero
+WHERE nombre ILIKE '_a%' 
+ORDER BY (CASE nombre
+	WHEN 'Daniela A'	THEN 7
+    WHEN 'Latrena Hadwen'	THEN 2
+	WHEN 'Lars Enticknap'	THEN 1
+	WHEN 'Randene Gonsalvez'	THEN 3
+	WHEN 'Hamid Govey'	THEN 5
+	WHEN 'Tabina Lunck' 	THEN 6
+	ELSE 100 END) ASC;

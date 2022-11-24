@@ -566,3 +566,70 @@ RIGHT JOIN viaje AS v
 Clausula SQL UNION ALL: El operador UNION ALL se utiliza para combinar los resultados de dos instrucciones SELECT que incluyen filas duplicadas.
 Cláusula SQL INTERSECT: se utiliza para combinar dos instrucciones SELECT, pero devuelve filas sólo de la primera instrucción SELECT que son idénticas a una fila de la segunda instrucción SELECT.
 Cláusula SQL EXCEPT: Combina dos instrucciones SELECT y devuelve filas de la primera instrucción SELECT que no son devueltas por la segunda instrucción SELECT.
+
+---------------------------------------------------------------------
+			PL / PsSQL
+
+Un bloque de codigo de ejecuta con DO luego el llamado de la funcion, 
+los signos (pesos pesos) $$ se utilizan para abrir y cerrar funciones
+#  DO $$
+
+   $$
+
+BEGIN; es donde empieza el codigo.
+END; donde termina el codigo
+DECLARE; es para declara variables, y el nombre de la variable va ir a la izquierda
+		 luego va el tipo de valor, tambien podemos asignarle un valor de inicio con (:=)
+		 ejempl: nombre_variable tipo_valor (:=iniciar_valor).
+
+- Vamos hacer una notificacion en la barra de informacion de postgresql
+que es un bloque de codigo.
+DO $$
+BEGIN
+ RAISE NOTICE 'Algo esta pasando'
+END
+$$
+
+
+- Vamos a agregar una variable que reciba las filas de una consulta
+para mostrarlas en el NOTICE.
+
+El tipo de dato que nos sirve para almacenar informacion de una fila es record.
+DO $$
+DECLARE
+	rec record;
+	contador integer := 0;
+BEGIN
+FOR rec IN SELECT * FROM pasajero LOOP
+	RAISE NOTICE 'El pasajero llamado: %', rec.nombre;
+	contador := contador + 1;
+	END LOOP;
+	RAISE NOTICE 'Conteo es %', contador;
+END $$
+
+
+----------------------------------
+CREAR FUNCION PARA GUARDAR PL
+
+para crear funciones tenemos que darle en CREATE FUNTION name_funcion()
+luego le decimos que es lo que va a retornar con RETURNS y despues
+le declaramos con AS $$ bloque de codigo $$ y antes de terminar todo
+le indicamos que tipo de lenguaje usa con LANGUAGE PLPSQL;
+
+CREATE FUNCTION importantePL()
+ RETURNS void
+AS $$
+DECLARE
+	rec record;
+	contador INTEGER := 0;
+BEGIN
+FOR rec IN SELECT * FROM pasajero LOOP
+	RAISE NOTICE 'El pasajero llamado: %', rec.nombre;
+	contador := contador +1;
+	END LOOP;
+	RAISE NOTICE 'Conteo es: %', contador;
+END $$
+LANGUAGE PLPGSQL;
+
+- llamado de funcion.
+SELECT importantepl();

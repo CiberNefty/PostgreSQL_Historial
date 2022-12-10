@@ -28,7 +28,7 @@ BEGIN
     BEGIN
 		RAISE NOTICE 'La cantidad aqui es: %', conta; -- Prints 80
         RAISE NOTICE 'La cantidad aqui es: %', OUTERBLOCK.conta; --Prints 50
-	END;
+	END; 
     RETURN conta;
 	RAISE NOTICE 'La cantidad aqui es: %', conta; -- Prints to
 END;
@@ -36,3 +36,42 @@ $$ LANGUAGE plpgsql;
 
 SELECT * FROM ejefuncion();
 ---------------------------------
+CREATE FUNTION sales_tac(real) RETURNS real AS $$
+DECLARE
+    subtotal ALIAS FOR $1;
+BEGIN
+    RETURN subtotal * 0,56;
+END;
+$$ LANGUAGE plpgsql;
+-----------------------------------------
+# Esta Funcion pl le resta al contador 1 cuando recibe
+# el llamado del trigger.
+
+CREATE OR REPLACE FUNCTION public.implD()
+    RETURNS trigger
+    LANGUAGE 'plpgsql'
+    COST 100
+    VOLATILE NOT LEAKPROOF
+AS $BODY$
+DECLARE
+	rec record;
+	contador INTEGER := 0;
+BEGIN
+FOR rec IN SELECT * FROM pasajero LOOP
+	contador := contador +1;
+	END LOOP;
+	
+	INSERT INTO cont_pasajero ("Total","Time")
+	VALUES (contador-1, now());
+	
+	RETURN OLD;
+END
+$BODY$;
+-- ..................................................
+CREATE TRIGGER mitriggerD
+BEFORE DELETE
+ON public.pasajero
+FOR EACH ROW
+EXECUTE PROCEDURE public.implD();
+
+-------------------------------------------------------

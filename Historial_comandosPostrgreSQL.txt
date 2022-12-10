@@ -633,3 +633,28 @@ LANGUAGE PLPGSQL;
 
 - llamado de funcion.
 SELECT importantepl();
+-------------------------------------------------
+		TRIGGERS
+Vamos a ver como adjuntar a una funcion especifica de una tabla 
+para que se ejecute automaticamente mas conocido como triggers
+
+Tambien conocidos como Disparadores.
+
+Son una herramienta muy utilez que nos permiten ejecutar funciones
+dependiendo de acciones que se ejecuten sobre una tabla.
+
+Esas acciones pueden ser INSERT, UPDATE, DELETE.
+
+Vamos a concatenar nuestra PL a una funcion de delete, insert de la tabla de pasajeros
+
+Creamos una tabla con dos valores Total, time y id y se va a llamar cont_pasajero
+esa tabla solo se va a modificar con la funcion que creamos anteriormente que se llama
+importanpl(), entonces primero creamos el trigger y luego hacemos la insercion
+
+cuando hayamos creado una pl y queramos unirla con un disparador esta puede ser la continuacion para ejecutar un trigger con pl.
+
+CREATE TRIGGER <name_trigger>
+AFTER INSERT
+ON <name_table>
+FOR EACH ROW
+EXECUTE PROCEDURE <name_pl()>;

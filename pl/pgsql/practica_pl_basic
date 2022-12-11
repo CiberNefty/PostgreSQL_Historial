@@ -1,0 +1,77 @@
+CREATE INDEX idx_fecha_nacimiento ON pasajero(fecha_nacimiento);
+
+SELECT COALESCE (p.nombre,'SIN NOMBRE') AS nombre, p.fecha_nacimiento, CASE WHEN p.fecha_nacimiento > '1979-01-01'
+THEN 'Mayor de edad' ELSE 'Menor de edad' END AS ">Edad<"
+, tr.modelo, tr.capacidad, e.nombre, e.direccion, v.inicio, v.fin FROM pasajero AS p 
+JOIN viaje AS v ON v.id_pasajero = p.id JOIN trayecto as t ON t.id = v.id_trayecto JOIN tren as tr ON tr.id = t.id_tren
+JOIN estacion AS e ON e.id = t.id_estacion
+WHERE v.inicio > '1976-01-01' AND v.id BETWEEN 1 AND 200 
+ORDER BY p.nombre ASC;
+
+EXPLAIN SELECT * FROM pasajero;
+SHOW KEYS FROM pasajero;
+
+-- ----------------------------------------------------------------
+--      EJEMPLOS PL
+
+CREATE FUNCTION ejefuncion() RETURNS integer AS $$
+DECLARE 
+    conta INTEGER := 30;
+BEGIN
+    RAISE NOTICE 'La cantidad aqui es: %', conta; -- Prints 30
+    conta := 50;
+    /*
+    Creamos un subproceso
+    */
+    DECLARE
+        conta INTEGER := 80;
+    BEGIN
+		RAISE NOTICE 'La cantidad aqui es: %', conta; -- Prints 80
+        RAISE NOTICE 'La cantidad aqui es: %', OUTERBLOCK.conta; --Prints 50
+	END; 
+    RETURN conta;
+	RAISE NOTICE 'La cantidad aqui es: %', conta; -- Prints to
+END;
+$$ LANGUAGE plpgsql;
+
+SELECT * FROM ejefuncion();
+---------------------------------
+CREATE FUNTION sales_tac(real) RETURNS real AS $$
+DECLARE
+    subtotal ALIAS FOR $1;
+BEGIN
+    RETURN subtotal * 0,56;
+END;
+$$ LANGUAGE plpgsql;
+-----------------------------------------
+# Esta Funcion pl le resta al contador 1 cuando recibe
+# el llamado del trigger.
+
+CREATE OR REPLACE FUNCTION public.implD()
+    RETURNS trigger
+    LANGUAGE 'plpgsql'
+    COST 100
+    VOLATILE NOT LEAKPROOF
+AS $BODY$
+DECLARE
+	rec record;
+	contador INTEGER := 0;
+BEGIN
+FOR rec IN SELECT * FROM pasajero LOOP
+	contador := contador +1;
+	END LOOP;
+	
+	INSERT INTO cont_pasajero ("Total","Time")
+	VALUES (contador-1, now());
+	
+	RETURN OLD;
+END
+$BODY$;
+-- ..................................................
+CREATE TRIGGER mitriggerD
+BEFORE DELETE
+ON public.pasajero
+FOR EACH ROW
+EXECUTE PROCEDURE public.implD();
+
+-------------------------------------------------------

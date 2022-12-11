@@ -9,3 +9,6 @@ For specific projects, collaboration between copywriters and designers may be be
 however, like Karen McGrane said, draft copy has a way of turning any meeting about
 layout decisions into a discussion about word choice. So don't be afraid to use lorem
 ipsum to keep everyone focused.
+
+
+cambios de la nueva rama

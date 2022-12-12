@@ -13,6 +13,10 @@ los ejemplos.
 
 PARA INVOCAR;
 
+1) Si trabajamos con una funcion al invocarla tiene que se con un SELECT.
+    Funcion -->  SELECT
+2) Si trabajamos con un procedimiento la invocamos con un CALL.
+    Procedimiento --> CALL
 
 */
 
@@ -53,3 +57,12 @@ CREATE OR REPLACE FUNCTION suma(numeric,numeric)
     END;
     $$
 LANGUAGE plpgsql;
+
+-- INVOCACION
+SELECT suma(4,6); -- Aqui estamos asignando a las variable a y b lo que seria 4 y 6 para que los sume
+
+-- INVOCACION en recuperacion en la BD
+SELECT suma((SELECT capacidad FROM tren WHERE modelo ILIKE 'Modelo 2%'),
+		    (SELECT capacidad FROM tren WHERE modelo ILIKE 'Modelo 1 xl%'));
+
+-- PODEMOS LLAMAR LA FUNCION dentro de una columna y que sume a la ves

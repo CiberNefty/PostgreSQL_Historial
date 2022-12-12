@@ -66,3 +66,25 @@ SELECT suma((SELECT capacidad FROM tren WHERE modelo ILIKE 'Modelo 2%'),
 		    (SELECT capacidad FROM tren WHERE modelo ILIKE 'Modelo 1 xl%'));
 
 -- PODEMOS LLAMAR LA FUNCION dentro de una columna y que sume a la ves
+
+--      EJEMPLO #2
+-- CREANDO UNA FUNCION PARA SERIE DE FIBONACCI
+
+CREATE OR REPLACE FUNCTION fibonacci(int)
+    RETURNS int
+    AS $$
+    DECLARE
+        a int; -- A la variable a vamos a asignarle la unica posicion del parametro que recibo.
+        res int := 0;
+    BEGIN
+        a := $1;
+        IF(a = 1 OR  a = 2) THEN
+            res :=1;
+        ELSE
+            res := fibonacci(a - 2) + fibonacci(a - 1);
+        END IF; -- Siempre que trabajemos con una estructura de condicion toca colocar la finalización de esa estructura de condicion.
+        RETURN res;
+ END; $$ LANGUAGE plpgsql;
+
+SELECT fibonacci(8); -- Obtenemos la posicion 8.
+SELECT fibonacci(3); -- Obtenemos la posicion 3.

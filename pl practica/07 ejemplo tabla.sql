@@ -91,3 +91,24 @@ UPDATE articulo SET cantidad = 0 WHERE item_id =6;
 UPDATE articulo SET cantidad = 0 WHERE item_id =10;
 
 SELECT articuloporcomprar();
+
+-- FUNCION PATRIMONIO
+--  Devolver cuanto es lo que tendria de dinero si vendiera todo lo que tengo en el stock
+CREATE OR REPLACE FUNCTION patrimonio() RETURNS numeric(7,2)
+AS $$
+DECLARE
+    total numeric(7,2) := 0.0; -- Creamos una variable total que es numeric y esta inicializada en 0.0  por que aqui va a tener el acumulado.
+    fila articulo%rowtype; -- Y creamos una variable que va a almacenar la estructura de la tabla articulo.
+BEGIN
+    FOR fila IN SELECT * FROM articulo WHERE cantidad != 0
+        LOOP
+            total := total + (fila.cantidad * fila.precio_venta);
+        END LOOP;
+    RETURN total;
+END;
+$$ LANGUAGE plpgsql;
+
+-- La funcion nos dice que si no vendieramos todos los productos que tenga en cantidad 0
+-- en stock  estaria vendiendo tanto. 
+SELECT to_char(patrimonio(),'LFM999,999.00') -- RESULTADO, invocamos la funcion patrimonio, le aplicamos un formato
+

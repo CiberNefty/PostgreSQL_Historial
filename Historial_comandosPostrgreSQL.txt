@@ -658,3 +658,8 @@ AFTER INSERT
 ON <name_table>
 FOR EACH ROW
 EXECUTE PROCEDURE <name_pl()>;
+------------------------------------
+
+SELECT age(current_date,date '1996-02-22')
+
+-----------------------------

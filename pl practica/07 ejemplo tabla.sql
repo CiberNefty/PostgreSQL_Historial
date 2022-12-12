@@ -82,4 +82,12 @@ $$ LANGUAGE plpgsql;
 SELECT articuloporcomprar(); -- Aqui observamos que la funcion sirve para dar el conteo de los articulos que ya no hay.
 SELECT * FROM articulo_por_comprar; -- Luego de que se ejecute la funcion verificamos que contenidos se han agregado.
 
--
+-- HACEMOS ACTUALIZACIONES DE DATOS.
+
+UPDATE articulo SET cantidad = 10 WHERE item_id =0; -- Aqui asumimos que el proveedor ya entrego unos articulos.
+UPDATE articulo SET cantidad = 0 WHERE item_id =1;
+UPDATE articulo SET cantidad = 0 WHERE item_id =2;
+UPDATE articulo SET cantidad = 0 WHERE item_id =6;
+UPDATE articulo SET cantidad = 0 WHERE item_id =10;
+
+SELECT articuloporcomprar();

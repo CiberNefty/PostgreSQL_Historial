@@ -39,4 +39,12 @@ SELECT * FROM vinos WHERE anaquel > 0 and anaquel <= 5; #Esta consulta nos ayuda
 SELECT * FROM vinos WHERE anaquel BETWEEN 1 and 13; #Esta funcion nos ayuda a traer registros hasta una cantidad exacta con BETWEEN.
 
 
+POSD: Podemos observar que a la hora de utilizar postgresql sabiendo que este archivo
+     que cree viene de Mysql Wordbench no nos permite hacer lo sigueinte;
 
+     1. Los alias no los deja colocar con comillas simples.
+     2. Las operaaciones recebadas en mysql a la hora de hacer un WHERE no deja hacer operacion eje: 
+        a int := 20;
+        WHERE a / 2;  No dejara hacer operacion por que la variable (a) no es  boolean.
+        Esto no quiere decir que PostgreSQL no admita operaciones.
+    

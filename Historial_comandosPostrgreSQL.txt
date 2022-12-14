@@ -663,3 +663,89 @@ EXECUTE PROCEDURE <name_pl()>;
 SELECT age(current_date,date '1996-02-22')
 
 -----------------------------
+	DATOS EXTERNOS (DBLINK)
+	Conexion a DBs remotas
+
+Muchas veces tendremos la necesidad de traer datos de servidores remotos, PostgreSQL ofrece un servicio muy bueno
+que se llama dblink, esta funcion permite conectarte a servicios remotos dentro de una consulta en el cual podemos
+hacer SELECT e incluso un JOIN con una conexion a una BD remota, vamos a pgadmin y crearemos un BD remota para pruebas.
+
+Para usar la funcion DBLINK, crearemos un BD en nuestro propio servidor simulando que sea una DB remota, para ello 
+crearemos todo el proceso desde el principio;
+1. Creamos una DB en pgadmin, le pondremos remota ó cualquier nombre.
+2. Crearemos una tabla, que sea como usuarios VIP la cual vamos a usar para cruzar con la tabla pasajeros (DB transporte):
+	2.1 Va a tener dos columnas: 1) una columna id Interger, 2)fecha Date (esta es para tener como otra columna adicional)
+3. Ingresamos datos a nuestra tabla (esta es una bd remota de prueba).
+4. Ahora nos desconectamos de la DB remota de prueba desde pgadmin.
+5. Ahora nos conectamos a esa DB remota desde la BD que vamos a unir (estamos en prueba con transporte).
+6. Vamos a crear un Script que nos permita consultar de nuestro pasajeros cual es VIP y que me traiga la informacion del VIP;
+7. Verificamos si la funcion del DBLINK esta correctamente instalada, ya que es una extension de postgres, de manera predeterminada no viene instalada.
+	7.1 Como lo hacemos?, simplemente hacemos el llamado a la consulta, Consultamos todo de la tabla remota;
+	SELECT * FROM dblink ('dbname=vip_remota 
+						  port=5432 
+						  host=127.0.0.1 
+						  user=usuario_consulta 
+						  password=etc123',
+						  'SELECT id,fecha FROM vip<table_name>');
+	- Esta recibe los siguiente parametros primero la BD la cual sera el nombre de la DB, luego ponemos el parametro del puerto el cual 
+	  es el predeterminado en este caso, luego ponemos el parametro de (host) el cual es en este caso 127.0.0.1 por que es el mismo equipo en el que estamos trabajando.
+	  recordar que en el host debe ir la IP en la cual vamos a querer conectar, luego va ir el paramtero del usuario,
+	  Luego el parametro de la clave de ese usuario.
+	- Es muy importante encapsular estas consultas para que los usuarios no tengan acceso a esta consulta.
+	- Podemos utilizar una vista o vista materializada para ocualtar esta informacion.
+	- Luego el siguiente parametro es la consulta que vamos hacer de la tabla remota en comillas.
+	- Luego si al ejecutar nos sale error es porque el servicio del dblink esta errada.
+8. Si nos! arroja error informando que no existe el dblink creamo la extension en nuestra DB;
+	CREATE EXTENSION dblink;
+	- Con esto le estamo diciendo a PostgreSQL que instale la extension dblink que lo tiene en su repository de versiones, pero que no lo ha instalado de forma prederminada.
+9. Cuando ejecutamos nuestra consulta (punto 7) si nos llega a salir un error de tipo SQL state: 42601, tenemos que agregarle un formato a lo que queramos encontrar de otra tabla.
+	- Asi que tenemos que llamarla como si fuera una tabla local:
+		- SELECT * FROM dblink ('dbname=vip_remota 
+						  port=5432 
+						  host=127.0.0.1 
+						  user=usuario_consulta 
+						  password=etc123',
+						  'SELECT id,fecha FROM vip<table_name>')
+						  AS datos_remotos (id integer, fecha date);
+	- Para eso lo podemos llamar como (AS datos_remotos) en este ejemplo.
+	- Ya que luego accederemos a datos_remotos; como si fuera datos_remotos.id o datos_remotos.fecha.
+	- Esto nos da la posibilidad de darle un formato de tipo local.
+	- Donde los parametros que le diremos son las variables de la tabla remota.
+	- Tenemos que agregarle estos parametros
+	- Ejecutar.
+10. Si nos! sale un error de permisos, significa que el usuario que pusimos (usuario_consulta) no tiene permisos en esa tabla
+	lo que hacemos es ir a la tabla que estamos ralacionando con la conexion remota y le damos permiso de que ese usuario 
+	pueda tener acceso, vamos a la DB que necesitemos, vamos a las tablas y agregamos una insercion masiva de permisos en la
+	opcion Grant wizard y le damos lo permisos que necesitemos.
+11. Ejecutar, nos deberia volver la consulta de esa relacion.
+12. Como vemos hemos traido datos de una db remota a la cual no tenmos acceso al motor pero si a los datos.
+-- ----------------------------------------------------------------
+13. Ahora vamos ha cruzar esa informacion con los datos locales, para eso podemos hacer JOIN, donde concervamos la misma
+	funcion del dblink y, solo faltaria indicarle como tiene que hacer el cruce.
+	- El cruce lo haremos con la palabra ON (<tableName.id = <name_table del Alias que creamos>.id).
+	- recordar que a la hora de hacer JOIN y utilizar la estructura del dblink debe estar como una tabla y encerrada en ().
+	SELECT * FROM pasajero
+	JOIN 
+	dblink('dbname=vip_remota 
+	 	   port=5432 
+	   		host=127.0.0.1 
+	   		user=usuario_consulta 
+	   		password=etc123',
+	   		'SELECT id,fecha FROM vip')
+	   	AS datos_remotos (id integer, fecha date)
+ 	ON (pasajero.id = datos_remotos.id);
+
+14. Tener encuenta:
+	- Que hay un valor especial de las consultas que se llama (USING) que la podemos usar cuando los dos campos sean igual,
+	  es decir sean id y id;
+	  SELECT * FROM pasajero
+	JOIN 
+	dblink('dbname=vip_remota 
+	 	   port=5432 
+	   		host=127.0.0.1 
+	   		user=usuario_consulta 
+	   		password=etc123',
+	   		'SELECT id,fecha FROM vip')
+	   	AS datos_remotos (id integer, fecha date)
+	USING (id);
+	Podemos observar que nos trae solo una columna de la tabla relacionada por que solo muestra el unico identificador con esa tabla.

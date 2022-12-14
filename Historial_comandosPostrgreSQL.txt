@@ -749,3 +749,18 @@ crearemos todo el proceso desde el principio;
 	   	AS datos_remotos (id integer, fecha date)
 	USING (id);
 	Podemos observar que nos trae solo una columna de la tabla relacionada por que solo muestra el unico identificador con esa tabla.
+-- -------------------------------
+Aqui hemos logrado traer los datos de la DB de transporte utilizando como DB principal de vip_remota.
+SELECT * FROM vip JOIN
+dblink ('dbname=transporte 
+		 port=5432 
+		 host=127.0.0.1 
+		 user=usuario_consulta 
+		 password=etc123',
+	    'SELECT id, nombre, direccion_residencia,fecha_nacimiento FROM pasajero')
+		AS datos_remotosDe_transporte (id integer, nombre character varying,
+									  direccion_residencia character varying,
+									  fecha_nacimiento date)
+--ON (vip.id = datos_remotosde_transporte.id)
+USING (id);
+-- -------------------------------

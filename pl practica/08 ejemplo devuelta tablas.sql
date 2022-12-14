@@ -71,3 +71,56 @@ $$ LANGUAGE sql;
 
 SELECT * FROM getCuentas(3000,50000,2015);
 
+-- --------------------------------
+-- FUNCION que devuelve el numero de cuentas y prestamos de cada cliente.
+CREATE OR REPLACE FUNCTION clientes(nombre varchar) RETURNS -- Aqui recibe como parametro nombre varchar
+    TABLE(cliente varchar(100),totalcuentas bigint, totalprestamos bigint)
+    -- Aqui la opcion returns table podemos expecificar que resultado se puede ver como una tabla,
+    -- Sino que ademas le podemos dar ya la estructura que va a tener la tabla.
+    --  Esta es una tabla de grado 3.
+AS$$
+    SELECT nombrecliente,count(distinct numcta),count(distinct numprestamo)
+    FROM cliente NATURAL JOIN ctacliente NATURAL JOIN prestatario
+    GROUP BY idcliente
+    HAVING nombrecliente LIKE nombre;
+END $$ LAGUAGE sql;
+
+SELECT * FROM clientes('%SÁNCHEZ%'); -- Aqui estamos llamando la funcion que creamos y le damos el parametro que necesitamos buscar.
+SELECT (clientes('CARLOS%')).cliente; -- Aqué le decimos que devuelva toda la información de la consulta pero nada mas la informacion de los clientes
+                                      -- Osea como creamos una estructura en la cual cree una tabla le decimos que muestre solo la primera columna.
+-- -------------------------------
+-- FUNCION IGUAL que la anterior, pero esta vez recibe dos parametros, que al final recupera un total de cuentas en total.
+CREATE OR REPLACE FUNCTION clientes(nombre varchar, total bigint) RETURNS
+    TABLE(cliente varchar(100),cuentas bigint, prestamos bigint)
+
+AS$$
+    SELECT nombrecliente,count(distinct numcta),count(distinct numprestamo)
+    FROM cliente NATURAL JOIN ctacliente NATURAL JOIN prestatario
+    GROUP BY idcliente
+    HAVING nombrecliente LIKE nombre AND count(distinct numcta) = total;
+END $$ LAGUAGE sql;
+-- USO
+SELECT * FROM clientes('CARLOS%',2);
+
+-- PARA ELIMINAR UNA FUNCTION
+-- Recordar que si ya no nos sirve una funcion es mejor eliminarla del sistema para ahorra espacio en memoria
+-- Tambien recordar que para borrar un function el sistema manejador de BD nos pide que coloquemos lo que seria los parametros que tiene la funcion.
+DROP FUNCTION clientes(varchar);
+-- -------------------------------
+-- OTRA FORMA DE DEVOLVER UNA TABLA
+
+CREATE OR REPLACE FUNCTION clientesctas(est varchar, nombre varchar) RETURNS
+    TABLE(cliente varchar(100),cuenta bigint, prestamos bigint)
+AS $$
+-- Aqui estamos trabajando con return que tambien hace parte de plpgsql
+    RETURN QUERY SELECT nombrecliente, count(distinct numcta),COUNT(distinct numprestamo)
+                 FROM (ctacliente NATURAL JOIN prestatario) NATURAL JOIN clinte
+                 WHERE estado = est
+                 GROUP BY idcliente, nombrecliente
+                 HAVING nombrecliente LIKE nombre;
+$$ LANGUAGE plpgsql;
+
+-- USO
+SELECT * FROM clientesctas('Chihuahua','%');
+SELECT * FROM clientesctas('C%','%');
+SELECT * FROM clientesctas('C%','%PEREZ%');

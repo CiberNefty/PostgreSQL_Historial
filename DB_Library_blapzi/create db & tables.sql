@@ -2,48 +2,67 @@ DROP DATABASE IF EXISTS library;
 CREATE DATABASE library;
 use library;
 
-CREATE TABLE authors (
-author_id int unsigned NOT NULL auto_increment,
+CREATE TABLE authors(
+author_id serial,
 name varchar(100) not null,
 nationality varchar(100) default NULL,
-PRIMARY KEY  (author_id),
-UNIQUE KEY uniq_author (name)
-)ENGINE = InnoDB Auto_increment =193 default CHARSET=utf8mb4;
+CONSTRAINT authors_pkey PRIMARY KEY (author_id)
+);
+--comment 'ISO 639-1 Language'
+CREATE TABLE public.books
+(
+    book_id serial,
+    author_id integer DEFAULT null,
+    title character varying(100) NOT NULL,
+    year integer NOT NULL DEFAULT '1900',
+    language character varying(2) NOT NULL,
+    cover_url character varying(500) DEFAULT null,
+    price double precision,
+    sellable smallint DEFAULT 0,
+    copies integer DEFAULT 1,
+    description text,
+    CONSTRAINT books_pkey PRIMARY KEY (book_id),
+    CONSTRAINT uniq_books_title UNIQUE (title),
+    CONSTRAINT uniq_books_language UNIQUE (language),
+    CONSTRAINT books_authors FOREIGN KEY (author_id)
+        REFERENCES public.authors (author_id) MATCH SIMPLE
+        ON UPDATE CASCADE
+        ON DELETE CASCADE
+        NOT VALID
+);
+TRUNCATE TABLE books;
+CONSTRAINT uniq_books_language (language)
+CONSTRAINT unique_author_name UNIQUE (name)INCLUDE (name);
+	
+CREATE TABLE public.clients
+(
+    client_id serial NOT NULL,
+    name character varying(50) DEFAULT null,
+    email character varying(100) NOT NULL,
+    birthdate date DEFAULT null,
+    gender character varying(1),
+    active smallint DEFAULT 1,
+    create_at timestamp with time zone NOT NULL DEFAULT current_timestamp,
+    CONSTRAINT clients PRIMARY KEY (client_id),
+    CONSTRAINT uniq_clients_email UNIQUE (email)
+);
 
-CREATE TABLE books(
-book_id int unsigned not null auto_increment,
-author_id int unsigned default null,
-title varchar(100) not null,
-year int not null default '1900',
-language varchar(2) not null comment 'ISO 639-1 Language',
-cover_url varchar(500) default null,
-price double(6,2) default null,
-sellable tinyint(1) not null default '0',
-copies int not null default '1',
-description text,
-PRIMARY KEY (book_id),
-UNIQUE KEY book_language (title,language)
-)ENGINE=INNODB AUTO_INCREMENT=199 default charset=utf8mb4;
-
-CREATE TABLE clients(
-client_id int unsigned not null auto_increment,
-name varchar(50) default null,
-email varchar(100) not null,
-birthdate DATE default null,
-gender enum('M','F') DEfault null,
-active tinyint(1) not null default '1',
-created_at timestamp not null default current_timestamp,
-PRIMARY KEY (client_id),
-UNIQUE KEY email (email)
-)ENGINE=INNODB auto_increment =101 default charset =utf8mb4;
-
-CREATE TABLE transactions(
-transaction_id int unsigned not null auto_increment,
-book_id int unsigned not null,
-client_id int unsigned not null,
-type enum('lend','sell') not null,
-created_at timestamp not null default current_timestamp,
-modified_at timestamp not null default current_timestamp on update current_timestamp,
-finished tinyint(1) not null default '0',
-PRIMARY KEY (transaction_id)
-)ENGINE=INNODB DEFAULT CHARSET=utf8mb4;
+CREATE TABLE IF NOT EXISTS public.transactions
+(
+    transaction_id integer NOT NULL DEFAULT nextval('transactions_transaction_id_seq'::regclass),
+    book_id integer NOT NULL,
+    client_id integer NOT NULL,
+    type character varying(4) COLLATE pg_catalog."default" NOT NULL,
+    created_at timestamp with time zone NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    modified_ad timestamp with time zone NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    finished smallint DEFAULT 0,
+    CONSTRAINT transactions_pkey PRIMARY KEY (transaction_id),
+    CONSTRAINT transactions_books_fkey FOREIGN KEY (book_id)
+        REFERENCES public.books (book_id) MATCH SIMPLE
+        ON UPDATE CASCADE
+        ON DELETE CASCADE,
+    CONSTRAINT transactions_clients_fkey FOREIGN KEY (client_id)
+        REFERENCES public.clients (client_id) MATCH SIMPLE
+        ON UPDATE CASCADE
+        ON DELETE CASCADE
+)

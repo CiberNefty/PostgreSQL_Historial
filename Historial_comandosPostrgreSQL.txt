@@ -764,3 +764,60 @@ dblink ('dbname=transporte
 --ON (vip.id = datos_remotosde_transporte.id)
 USING (id);
 -- -------------------------------
+
+		TRANSACCIONES
+
+BEGIN
+<consultas>
+COMMIT | ROLLBACK
+
+BEGIN:  inicia todo el motor de DB diciendole que tenemos que hacer lo siguiente en una sola transaccion.
+COMMIT: es que si llegamos al final, guarde todo los cambios.
+ROLLBACK: es que si algo fallo, devuelva todo lo que hicimos.
+
+pgadmin.
+
+Necesitamos estar en pgadmin para hacer transacciones, luego obervamos que de manera predeterminada tiene
+la opcion configurada de commit por defecto, se encuentra al lado del boton de ejecutara consulta, TENEMOS
+QUE DESACTIVARLO si no sabemos que es lo que vamos hacer.
+
+Consulta basica:
+BEGIN;
+SELECT true; -- Le dimos ejecutar y lo tomo como una consulta normal.
+SELECT now(); -- luego ejecutamos esta linea de codigo y lo ejecuto normal porque le motor entiende que es de la misma transaccion.
+
+- Pero que pasa si le hacemos un INSERT, supongamos que para nosotros es vital que al momento de insertar un
+	tren y una estacion se hagan las dos tareas y ninguna falle, si alguna falla tenemos que hacer que la otra se devuelva
+
+EJEMPLO estacion y tren:
+
+BEGIN;
+INSERT INTO public.estacion(
+	nombre, direccion)
+	VALUES ('Estacion Transaccion', 'Direccion Transaccion');
+
+INSERT INTO public.tren(
+	modelo, capacidad)
+	VALUES ('Modelo Transaccion', 123);
+
+-- Si queremos que todo se ejecute como un todo dejamos el commit al final.
+-- COMMIT; 
+
+-- Si hacemos rollback no insertara nada 
+-- Si lo dejamos sin nungna de estas dos la transaccion estara abierta.
+-- Al ejecutarla vemos que nos dice correcta insercion pero si nos vamos a las tablas, no deberia apareser nada porque no le hemos hecho commit o rollback.
+- luego podemos hacer el commit desde el boton de pgadmin o solo ejecutamos una linea de (commit;)
+
+-------------------------------------
+BEGIN;
+-- Esta insercion esta correcta
+INSERT INTO public.tren(
+	modelo, capacidad)
+	VALUES ('Modelo Transa 2', 1234);
+-- Esta insercion esta erronea.
+INSERT INTO public.estacion(
+	id,nombre, direccion)
+	VALUES (106,'Estacion Transaccion', 'Direccion Transaccion');
+-- Si ejecutamos una transaccion donde una de las inserciones  o consulta esta erronea va a lanzar un
+-- rollback automatico a, pesar de que tengamos el commit al final.
+COMMIT;

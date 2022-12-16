@@ -821,3 +821,64 @@ INSERT INTO public.estacion(
 -- Si ejecutamos una transaccion donde una de las inserciones  o consulta esta erronea va a lanzar un
 -- rollback automatico a, pesar de que tengamos el commit al final.
 COMMIT;
+------------------------------------
+
+	EXTENSIONES
+
+Hicimos un ejemplo de como conectar a una DB remota para saber que pasajeros eran VIP lo hicimos usando la
+extension DBLINK que viene instalada a la hora de instalar postgresql pero que no estaba activa y tuvimos 
+que activarla usando pgadmin, muchas de estas extensiones estan instaladas en el sistema operativo pero 
+no estan activas, estas extensiones nos sirve para hacer calculos, analisis, prototipado he inclusive para 
+machin learning pero par ausarlas tenemos que activarlas.
+
+Vamos ha activar una funcion que nos permite hacer la comparacion entre dos palabras, letra por letra y como
+suenan cuando se pronuncian en ingles todo usando pgadmin.
+
+postgresql.org/docs/11/contrib.html
+
+vamos a utilizar la instancia LEVENSHEIN que es un algoritmo matematico para comparar 2 palabras la 
+diferencia letra por letra y tambien en este caso usaremos la funcion diferents que nos permite comparar
+dos palabras y la forma en la que suenan en ingles.
+
+- SELECT levenshtein ('oswaldo','osvaldo');
+
+-- Nos deveria dar error informandonos que la funcion no existe,
+por que pgadmin no reconoce si la funcion es una funcion que hayamos creado o una funcion de una extension.
+-para eso nos dirigimos a la documentacion de postgresql y copiamos el nombre de la extension que es! y, 
+luego creamos la extension.
+
+- CREATE EXTENSION fuzzystrmatch;
+- SELECT levenshtein ('oswaldo','osvaldo'); 
+-- Al ejecutar nos muestra un numero que nos dice que son la cantidad de letras que hay que cambiar para que sean iguales.
+
+Vamos a usar ahora una funcion que hace parte de la misma extension que se llama difference()
+difference se encuentra en un nivel mas avanzado que usan incluso en este momento algoritmoms de machine learning para
+identificacion de palabras cuando las pronuncias.
+
+en este caso difference compara dos palabras y nos dice de 0 a 4 que tan similares son, siendo 0 totalmente 
+diferentes y 4 practicamente iguales.
+
+SELECT difference('oswaldo','osvaldo')
+
+----------------------------------------------
+	BACKUPS Y RESTAURACION
+
+- pg_dump
+- pg_restore
+
+Tenemos que tener copias de seguridad en caso de que un caso catastrofico ocurra.
+Para eso PostgreSQL tiene los servicios de restauracion en este caso en pgadmin haremos un dump a la DB que es una 
+copia de seguridad y para restaurarla desde 0, usaremos los comando pg_dump y pg_restore.
+
+1. Vamos y le damos clic derecho a la DB que queremos y seleccionamos donde dice Backup.
+2. Se nos abrira todo un formulario que nos preguntara todo lo que tenemos que hacer para sacar el Backup.
+	2.1 La priemra opcion va hacer el nombre que le demos a nuestro backup.
+	2.2 La segunda opcion nos muestra el formato en el cual sera;
+		2.2.1 CUSTOM: Es un formato unico que usa postgresql para guardar la informacion de la DB, si la vamos a restaurar usamos pgadmin no, podemos usar un formato custom con otros editores.
+			  TAR: es un archivo comprimido que contiene la DB.
+			  PLAIN: Es simplemente SQL plano es decir tendras la creacion de las tablas, las consultas, los insert, todo como si fuera una gran consulta de DB.
+			  DIRECTORY: Tiene la estructura sin comprimir de la DB.
+	2.3 La tercera opcion es el radio de compresion, no es necesario que lo cambiemos pero, es la cantidad de veces que el ciclo de compresion se ejecuta sobre el archivo para que cree un archivo mas pequeño.
+	2.4 La cuarta opcion es la Enconding, la podemos dejar como predeterminada debe estar como UTF8.
+	2.5 La quinta opcion es el numero de trabajos, no lo podemos modificar por que eso lo decide pgadmin.
+	2.6 La sexta opcion nos muestra de quien va hacer el dueño de ese dump.

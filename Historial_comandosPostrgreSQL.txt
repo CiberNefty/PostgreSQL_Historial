@@ -882,3 +882,18 @@ copia de seguridad y para restaurarla desde 0, usaremos los comando pg_dump y pg
 	2.4 La cuarta opcion es la Enconding, la podemos dejar como predeterminada debe estar como UTF8.
 	2.5 La quinta opcion es el numero de trabajos, no lo podemos modificar por que eso lo decide pgadmin.
 	2.6 La sexta opcion nos muestra de quien va hacer el dueño de ese dump.
+--------------------------------------------------
+	MANTENIMIENTO
+
+PostgreSQL tiene una serie de funciones y actividades que va desarrollando en segundo  plano
+mientras trabajamos en la DB el nombre mas comun es vaciado ó backcumb ya que se refiere a quitar todas las columnas, 
+filas he items del discoduro que no estan funcionando, postgresql lo hace para obtimizar todos los servicios ya que
+por trabajar rapido muchas veces deja filas con datos como para marcar despues.
+
+PostgreSQL tiene 2 NIVELES de limpieza;
+
+1. Este seria mas o menos el liviano que se ejecuta todo el tiempo la DB, se encuentra limpiando datos constantemente.
+2. El segundo "full" ó completo el cual es capaz de bloquear las tablas para hacer la limpieza y luego la desbloquea, esas actividades no devemos involucrarlo a menos que sea necesario.
+
+EJEMPLO: 
+Una limpieza full es importante cuando tengamos una tabla muy grande y este teniendo muchos problemas de indexacion, es decir que al momento de hacer la consulta se demore mucho.

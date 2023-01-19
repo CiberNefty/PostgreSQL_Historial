@@ -86,3 +86,20 @@ INSERT INTO aaa (bbb,ccc)
 VALUES ('abcde','efghi');
 
 SELECT * FROM aaab;
+-- ------------------------------------
+CREATE OR REPLACE FUNCTION movies_stats()
+RETURNS VOID
+LANGUAGE plpgsql
+AS $$
+DECLARE
+	total_rated_r REAL := 0.0; -- Esta variable se utiliza para decir las peliculas que no peliculas para niños.
+	total_larger_thank_100 REAL := 0.0; -- Peliculas de una duracion de mas de 100 minutes
+	total_published_2006 REAL := 0.0;
+	-- Vamos a declarar dos variables promedios 
+	average_duracion REAL := 0.0; -- Esta es una variable de promedio de duracion que tienen las peliculas.
+	average_rental_price REAL := 0.0; -- Esta es una variable de promedio de renta a las que se rentan las peliculas.
+BEGIN
+-- DEntro de la funcion vamos a asignarle a cada variable el resultado de una consulta.
+	to
+END;
+$$;
